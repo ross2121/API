@@ -1,65 +1,52 @@
-use std::clone;
+
 
 use serde::{Serialize,Deserialize};
-use serde_json::{ser, Number};
-#[derive(Serialize,Deserialize,Clone,PartialEq)]
+use serde_json::{ Number};
+#[derive(Serialize,Deserialize,Clone,PartialEq,Debug)]
 pub enum Side  {
     Sell,Buy
 }
 #[derive(Serialize,Deserialize,Debug,Clone,PartialEq)]
 #[serde(rename_all="camelCase")]
-pub struct Fill{
+pub struct CreateOrder{
 pub price :String,
 pub qty:f64,
-pub trade_id:f64    
+pub market:String,
+pub side:Side,
+pub user_id:String    
 }
-#[derive(Serialize,Deserialize,Clone,PartialEq)]
+#[derive(Serialize,Deserialize,Clone,Debug,PartialEq)]
 #[serde(rename_all="camelCase")]
-pub struct Trade{
-  pub isbuyer:bool,
-  pub price:String,
-  pub quantity:String,
-  pub symbol:String,
+pub struct Order{
+  pub userid:String,
   pub market:String
 }
-#[derive(Serialize,Deserialize,Clone,PartialEq)]
+#[derive(Serialize,Deserialize,Clone,Debug,PartialEq)]
 #[serde(rename_all="camelCase")]
-pub struct  Ticker{
-    pub lastprice:Number,
-    pub highestbid:Number,
-   pub  lowestask:Number,
-   pub volume24h:Number
+pub struct  Markets{
+    pub  market:String
 }
-#[derive(Serialize,Deserialize,Clone,PartialEq)]
-#[serde(rename_all="camelCase")]
-pub struct  Depth{
-    pub market:String,
-    pub bids:Vec<(String,String)>,
-    pub ask:Vec<(String,String)>
-    
-}
-#[derive(Serialize,Deserialize,Clone,PartialEq)]
+
+#[derive(Serialize,Deserialize,Clone,Debug,PartialEq)]
 #[serde(rename_all="camelCase")]
 pub struct OrderCancel{
 pub oderid:String,
-pub executedqty:Number,
-pub remainingqty:Number
-}
-#[derive(Serialize,Deserialize,Clone,PartialEq)]
-#[serde(rename_all="camelCase")]
-pub struct Orderstruct{
-    pub orderid:String,
-    pub executedid:String,
-    pub price:String,
-    pub userid:String,
-    pub side:Side,
-    pub quantity:String
-}
-#[derive(Serialize,Deserialize,PartialEq,Clone)]
-#[serde(rename_all="camelCase")]
-pub struct  Placeorder{
- pub orderid:String,
- pub executedqty:String,
- pub fills:Vec<Fill>
+pub market:String,
 }
 
+#[derive(Serialize,Deserialize,Debug,Clone,PartialEq)]
+#[serde(tag="type",content="payload")]
+pub enum  FromOrderbook {
+   #[serde(rename="CREATE_ORDER")]
+    Depth(CreateOrder),
+    #[serde(rename="CANCEL_ORDER")]
+    OrderPlaced(Order),
+    #[serde(rename="GET_DEPTH")]
+     OrderCancel(Markets),
+     #[serde(rename="GET_TRADE")]
+     OpenOrder(Markets),
+     #[serde(rename="GET_TICKER")]
+     Trade( Markets),
+     #[serde(rename="GET_OPEN_ORDER")]
+     Ticker(Order)
+}

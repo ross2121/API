@@ -1,8 +1,8 @@
-use std::clone;
+
 
 use serde::{Serialize,Deserialize};
-use serde_json::{ser, Number};
-#[derive(Serialize,Deserialize,Clone,PartialEq)]
+use serde_json::{ Number};
+#[derive(Serialize,Deserialize,Clone,PartialEq,Debug)]
 pub enum Side  {
     Sell,Buy
 }
@@ -13,7 +13,7 @@ pub price :String,
 pub qty:f64,
 pub trade_id:f64    
 }
-#[derive(Serialize,Deserialize,Clone,PartialEq)]
+#[derive(Serialize,Deserialize,Clone,Debug,PartialEq)]
 #[serde(rename_all="camelCase")]
 pub struct Trade{
   pub isbuyer:bool,
@@ -22,7 +22,7 @@ pub struct Trade{
   pub symbol:String,
   pub market:String
 }
-#[derive(Serialize,Deserialize,Clone,PartialEq)]
+#[derive(Serialize,Deserialize,Clone,Debug,PartialEq)]
 #[serde(rename_all="camelCase")]
 pub struct  Ticker{
     pub lastprice:Number,
@@ -30,7 +30,7 @@ pub struct  Ticker{
    pub  lowestask:Number,
    pub volume24h:Number
 }
-#[derive(Serialize,Deserialize,Clone,PartialEq)]
+#[derive(Serialize,Deserialize,Clone,PartialEq,Debug)]
 #[serde(rename_all="camelCase")]
 pub struct  Depth{
     pub market:String,
@@ -38,14 +38,14 @@ pub struct  Depth{
     pub ask:Vec<(String,String)>
     
 }
-#[derive(Serialize,Deserialize,Clone,PartialEq)]
+#[derive(Serialize,Deserialize,Clone,Debug,PartialEq)]
 #[serde(rename_all="camelCase")]
 pub struct OrderCancel{
 pub oderid:String,
 pub executedqty:Number,
 pub remainingqty:Number
 }
-#[derive(Serialize,Deserialize,Clone,PartialEq)]
+#[derive(Serialize,Deserialize,Clone,Debug,PartialEq)]
 #[serde(rename_all="camelCase")]
 pub struct Orderstruct{
     pub orderid:String,
@@ -62,4 +62,19 @@ pub struct  Placeorder{
  pub executedqty:String,
  pub fills:Vec<Fill>
 }
-
+#[derive(Serialize,Deserialize,Debug,Clone,PartialEq)]
+#[serde(tag="type",content="payload")]
+pub enum  FromOrderbook {
+   #[serde(rename="DEPTH")]
+    Depth(Depth),
+    #[serde(rename="ORDER_PLACED")]
+    OrderPlaced(Orderstruct),
+    #[serde(rename="ORDER_CANCELLED")]
+     OrderCancel(OrderCancel),
+     #[serde(rename="OPEN_ORDER")]
+     OpenOrder(Vec<Orderstruct>),
+     #[serde(rename="TRADES")]
+     Trade( Trade),
+     #[serde(rename="TICKER")]
+     Ticker(Ticker)
+}
