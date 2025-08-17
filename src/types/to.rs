@@ -36,7 +36,7 @@ pub market:String,
 
 #[derive(Serialize,Deserialize,Debug,Clone,PartialEq)]
 #[serde(tag="type",content="payload")]
-pub enum  FromOrderbook {
+pub enum  ToOrderbook {
    #[serde(rename="CREATE_ORDER")]
     Depth(CreateOrder),
     #[serde(rename="CANCEL_ORDER")]
