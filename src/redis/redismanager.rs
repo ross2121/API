@@ -1,7 +1,7 @@
 use once_cell::sync::Lazy;
 use std::sync::Mutex;
 use redis::{Client, Commands, PubSubCommands, RedisResult};
-use serde::{Serialize,Deserialize};
+use serde::{Serialize};
 
 use crate::types::to::ToOrderbook;
 use uuid::Uuid;
@@ -15,19 +15,18 @@ pub struct RedisManager{
     client:Client,
     pubsub:Client
 }
-
-
-static  INSTANCE:Lazy<Mutex<RedisManager>>=Lazy::new(||{Mutex::new(RedisManager::main())});
+pub static  INSTANCE:Lazy<Mutex<RedisManager>>=Lazy::new(||{Mutex::new(RedisManager::main())});
 impl RedisManager{
-    fn instance()-> & 'static Mutex<RedisManager>{
+    pub fn instance()-> & 'static Mutex<RedisManager>{
       &INSTANCE
     }
-    fn main()->Self{
-          let client=Client::open("asdas").unwrap();
-          let pubsub=Client::open("dasd").unwrap();
+  pub fn main()->Self{
+    let redis_url = "redis://localhost:6379";
+          let client=Client::open(redis_url).unwrap();
+          let pubsub=Client::open(redis_url).unwrap();
           RedisManager { client:client, pubsub:pubsub }
     }
-    fn redis(&self,message:ToOrderbook){
+    pub fn redis(&self,message:ToOrderbook)->RedisResult<FromOrderbook>{
        let mut client=self.client.get_connection().unwrap();
        let mut pubsub=self.pubsub.get_connection().unwrap();
        let id = Uuid::new_v4();
@@ -39,11 +38,10 @@ impl RedisManager{
     };
     let json: () =client.lpush("message",serde_json::to_string(&message).expect("Not able to send message")).unwrap();
       let msg=pubsubcon.get_message().expect("Unable to get message");
-      let mut data:String=msg.get_payload().expect("No data");
+      let  data:String=msg.get_payload().expect("No data");
       pubsubcon.unsubscribe(id.to_string()).unwrap();
-      Ok(serde_json::from_str(data).expect("unable to get message"));
-
-
+      let response_data: FromOrderbook =serde_json::from_str(&data).expect("No response from orderbook");
+      Ok(response_data)
     }
 }
   

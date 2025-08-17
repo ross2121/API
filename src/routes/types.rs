@@ -26,5 +26,5 @@ pub struct ResponseCreateOrder{
 pub struct ResponseDeleteOrder{
     pub response:bool,
     pub filled_qty:String,
-    pub reaminag_qty:St
+    pub reaminag_qty:String
 }
