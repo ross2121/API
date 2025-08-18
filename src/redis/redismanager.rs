@@ -6,6 +6,7 @@ use serde::{Serialize};
 use crate::types::to::ToOrderbook;
 use uuid::Uuid;
 use crate::types::from::FromOrderbook;
+
 #[derive(Serialize,Debug)]
 pub struct Messagetype{
     userid:String,

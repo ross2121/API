@@ -38,7 +38,7 @@ pub market:String,
 #[serde(tag="type",content="payload")]
 pub enum  ToOrderbook {
    #[serde(rename="CREATE_ORDER")]
-    Depth(CreateOrder),
+    CreateOrder(CreateOrder),
     #[serde(rename="CANCEL_ORDER")]
     OrderPlaced(Order),
     #[serde(rename="GET_DEPTH")]

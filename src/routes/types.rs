@@ -1,6 +1,6 @@
 use serde::{Deserialize,Serialize};
 #[derive(Serialize,Deserialize)]
-pub struct creatorder{
+pub struct Creatorder{
     pub price:u64,
     pub quantity:f64,
     pub user_id:String,
