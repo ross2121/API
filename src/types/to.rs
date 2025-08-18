@@ -1,7 +1,7 @@
 
 
 use serde::{Serialize,Deserialize};
-use serde_json::{ Number};
+
 #[derive(Serialize,Deserialize,Clone,PartialEq,Debug)]
 pub enum Side  {
     Sell,Buy
@@ -40,13 +40,13 @@ pub enum  ToOrderbook {
    #[serde(rename="CREATE_ORDER")]
     CreateOrder(CreateOrder),
     #[serde(rename="CANCEL_ORDER")]
-    OrderPlaced(Order),
+    OrderCancel(OrderCancel),
     #[serde(rename="GET_DEPTH")]
-     OrderCancel(OrderCancel),
+     Depth(Order),
      #[serde(rename="GET_TRADE")]
-     OpenOrder(Markets),
+     Trade(Markets),
      #[serde(rename="GET_TICKER")]
-     Trade( Markets),
+     Ticker( Markets),
      #[serde(rename="GET_OPEN_ORDER")]
-     Ticker(Order)
+     OpenOrder(Order)
 }

@@ -1,6 +1,6 @@
-use actix_web::{delete, post, web, HttpResponse, Responder};
+use actix_web::{delete, get, post, web, HttpResponse, Responder};
 
-use crate::{redis::redismanager::RedisManager, types::to::{CreateOrder, OrderCancel, ToOrderbook}};
+use crate::{redis::redismanager::RedisManager, types::to::{CreateOrder, Order, OrderCancel, ToOrderbook}};
 
 
 #[post("/create/order")]
@@ -31,4 +31,17 @@ async  fn deleteorder(body:web::Json<OrderCancel>)->impl Responder{
           }
       }
       
+}
+#[get("/open")]
+async  fn getaccount(query:web::Data<Order>)->impl Responder{
+   let redis=RedisManager::instance().lock().unwrap();
+
+   let message=ToOrderbook::OpenOrder(query.get_ref().clone());  
+   match  redis.redis(message) {
+       Ok(response)=>HttpResponse::Ok().json(response),
+       Err(_)=>{
+        HttpResponse::InternalServerError().body("Failed to get the order")
+       }
+   }
+  
 }
