@@ -42,7 +42,7 @@ pub enum  ToOrderbook {
     #[serde(rename="CANCEL_ORDER")]
     OrderCancel(OrderCancel),
     #[serde(rename="GET_DEPTH")]
-     Depth(Order),
+     Depth(Markets),
      #[serde(rename="GET_TRADE")]
      Trade(Markets),
      #[serde(rename="GET_TICKER")]

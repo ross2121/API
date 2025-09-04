@@ -2,12 +2,12 @@ mod types;
 mod redis;
 mod routes;
 
+
 use actix_web::{web, App, HttpServer};
 
 use crate::routes::main;
 use crate::routes::order::{createorder, deleteorder};
-use crate::types::from;
-use crate::redis::redismanager;
+
 
 
 
